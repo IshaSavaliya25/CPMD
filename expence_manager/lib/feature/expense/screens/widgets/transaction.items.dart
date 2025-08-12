@@ -1,0 +1,3 @@
+class Transaction.items {
+  Transaction
+}
