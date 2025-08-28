@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/models/todo.dart';
+import 'package:todo_app/services/api_call.dart';
 
 class TodoScreen extends StatefulWidget {
   TodoScreen({super.key});
@@ -14,6 +15,17 @@ class _TodoScreenState extends State<TodoScreen> {
   TextEditingController titleController = TextEditingController();
 
   int selIndx = -1;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchData();
+  }
+
+  fetchData() async {
+    await APICall.fetchTodos();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +45,7 @@ class _TodoScreenState extends State<TodoScreen> {
                 ),
               ),
               IconButton(
-                onPressed: () {
+                onPressed: () async {
                   // add to list
                   if (titleController.text.isNotEmpty) {
                     if (selIndx == -1) {
@@ -42,10 +54,14 @@ class _TodoScreenState extends State<TodoScreen> {
                       );
                     } else {
                       todos[selIndx].title = titleController.text;
-                      selIndx=-1;
+                      selIndx = -1;
                     }
                     print(todos.length);
+                    await APICall.addTodo(
+                      Todo(title: titleController.text, isCompleted: false),
+                    );
                     titleController.clear();
+
                     setState(() {});
                   }
                 },
@@ -69,9 +85,9 @@ class _TodoScreenState extends State<TodoScreen> {
                     title: Text('${todos[index].title}'),
                     secondary: SizedBox(
                       width:
-                          MediaQuery.of(context).size.width * 0.2 > 100
-                              ? 100
-                              : MediaQuery.of(context).size.width * 0.2,
+                          MediaQuery.of(context).size.width * 0.25 > 180
+                              ? 180
+                              : MediaQuery.of(context).size.width * 0.25,
                       child: Row(
                         children: [
                           IconButton(
